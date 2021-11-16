@@ -1,10 +1,10 @@
-name: de10-image
+name: image
 
 on:
   workflow_dispatch:
 
 jobs:
-  de10-image:
+  image:
 
     runs-on: ubuntu-latest
 
