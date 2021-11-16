@@ -1,6 +1,6 @@
 name: image
-
 on:
+  pull_request:
   workflow_dispatch:
 
 jobs:
