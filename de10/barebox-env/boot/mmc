@@ -1,0 +1,8 @@
+#!/bin/sh
+
+global.bootm.oftree="/boot/socfpga_cyclone5_de10_replay.dtb"
+global.bootm.image="/boot/zImage"
+
+#bootargs-ip
+
+global.linux.bootargs.dyn.root="root=/dev/mmcblk0p2 loop=rootfs.img ro rootwait mem=256M memmap=768M\$256M"

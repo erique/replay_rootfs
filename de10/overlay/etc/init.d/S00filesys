@@ -1,0 +1,106 @@
+#!/bin/sh
+
+DEV=/dev/mmcblk0
+DATA=/dev/mmcblk0p3
+DATA_MNT=/media/data
+USER=$DATA_MNT/userdata.img
+USER_MNT=/tmp/user
+
+create_data_partition() {
+	echo "Creating exFAT partition ($DATA)..."
+	fdisk "$DEV" <<EOF
+p
+n
+p
+3
+
+
+t
+3
+7
+p
+w
+EOF
+	partprobe
+	[ ! -e "$DATA" ] && { echo "Unable to create exFAT partition"; exit 1; }
+
+	mkfs.exfat -v --volume-label=Data "$DATA"
+}
+
+create_user_overlay() {
+	echo Create $USER
+	dd if=/dev/zero of=$USER bs=1024 count=1024
+	mkfs.ext4 $USER
+}
+
+create_overlay() {
+	LOWER=$1
+	UPPER=$USER_MNT$1/upper
+	WORK=$USER_MNT$1/work
+	echo "Overlay $UPPER on top of $LOWER (using $WORK)"
+	[ ! -d $UPPER ] && mkdir -p $UPPER
+	[ ! -d $WORK ] && mkdir -p $WORK
+	mountpoint $LOWER || mount -t overlay overlay -o lowerdir=$LOWER,upperdir=$UPPER,workdir=$WORK $LOWER
+}
+
+create_tmpfs() {
+	TMP=$1
+	BUFFER=`mktemp -d`
+	echo "Creating tmpfs at $TMP (via $BUFFER)"
+	cp -r $TMP/* $BUFFER
+	mount -t tmpfs tmpfs $TMP
+	cp -r $BUFFER/* $TMP
+	rm -r $BUFFER
+}
+
+start() {
+	# create and mount data partition
+
+	[ ! -e "$DATA" ] && create_data_partition
+	mountpoint $DATA_MNT || mount -o "uid=`id -u replay`,gid=`id -g replay`" "$DATA" "$DATA_MNT"
+	[ ! -e "$DATA_MNT" ] && { echo "Unable to mount exFAT partition"; exit 1; }
+
+	# create and mount user data
+
+	[ ! -e "$USER" ] && create_user_overlay
+	mountpoint $USER_MNT || { mkdir -p $USER_MNT && mount $USER $USER_MNT; }
+	[ ! -e "$USER_MNT" ] && { echo "Unable to mount user loop"; exit 1; }
+
+	create_overlay /etc/ssh
+	create_overlay /home
+	create_tmpfs /var/lib/samba
+
+	echo Ok.
+}
+
+stop() {
+	umount /etc/ssh
+	umount /home
+	umount /var/lib/samba
+	umount "$USER_MNT"
+	umount "$DATA_MNT"
+}
+
+restart() {
+	stop
+	start
+}
+
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	restart
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $?
+
