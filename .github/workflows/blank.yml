@@ -1,7 +1,7 @@
-name: CI2
+name: blank
 
 on:
-#  push:
+  push:
   pull_request:
   workflow_dispatch:
 
@@ -14,11 +14,3 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-
-    - name: build
-      run: ./build.sh
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: replay_de10
-        path: out/images/sdcard.img
