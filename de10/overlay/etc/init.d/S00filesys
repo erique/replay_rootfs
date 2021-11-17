@@ -57,13 +57,13 @@ start() {
 	# create and mount data partition
 
 	[ ! -e "$DATA" ] && create_data_partition
-	mountpoint $DATA_MNT || mount -o "uid=`id -u replay`,gid=`id -g replay`" "$DATA" "$DATA_MNT"
+	mountpoint $DATA_MNT || mount -o "sync,dirsync,noatime,nodiratime,uid=`id -u replay`,gid=`id -g replay`" "$DATA" "$DATA_MNT"
 	[ ! -e "$DATA_MNT" ] && { echo "Unable to mount exFAT partition"; exit 1; }
 
 	# create and mount user data
 
 	[ ! -e "$USER" ] && create_user_overlay
-	mountpoint $USER_MNT || { mkdir -p $USER_MNT && mount $USER $USER_MNT; }
+	mountpoint $USER_MNT || { mkdir -p $USER_MNT && mount -o sync,dirsync,noatime,nodiratime $USER $USER_MNT; }
 	[ ! -e "$USER_MNT" ] && { echo "Unable to mount user loop"; exit 1; }
 
 	create_overlay /etc/ssh
@@ -77,7 +77,11 @@ stop() {
 	umount /etc/ssh
 	umount /home
 	umount /var/lib/samba
+	sync
+	sleep 1
 	umount "$USER_MNT"
+	sync
+	sleep 1
 	umount "$DATA_MNT"
 }
 
