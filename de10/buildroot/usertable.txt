@@ -1,1 +1,1 @@
-	replay 1000 users 1000 =replay /home/replay /bin/sh sudo Replay User
+	replay 1000 users 1000 =replay /home/replay /bin/sh sudo,audio,dialout,plugdev Replay User
