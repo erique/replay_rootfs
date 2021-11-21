@@ -10,6 +10,9 @@ create_data_partition() {
 	echo "Creating exFAT partition ($DATA)..."
 	fdisk "$DEV" <<EOF
 p
+d
+3
+p
 n
 p
 3
