@@ -17,5 +17,10 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: replay_de10
-        path: out/images/sdcard.img
+        name: replay_de10_image
+        path: image
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: replay_de10_update
+        path: update
