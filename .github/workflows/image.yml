@@ -12,6 +12,11 @@ jobs:
       with:
         submodules: recursive
 
+    - name: apt install
+      run: |
+        sudo apt update
+        sudo apt install -y mtools
+
     - name: build
       run: ./build.sh
 
