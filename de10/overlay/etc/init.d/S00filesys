@@ -32,7 +32,7 @@ EOF
 
 create_user_overlay() {
 	echo Create $USER
-	dd if=/dev/zero of=$USER bs=1024 count=1024
+	dd if=/dev/zero of=$USER bs=1024 count=8192
 	mkfs.ext4 $USER
 }
 
