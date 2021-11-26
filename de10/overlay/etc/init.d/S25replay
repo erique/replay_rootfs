@@ -4,12 +4,8 @@
 #
 
 init_replay() {
-	# unzip here instead.. 
 	cp /home/replay/main.elf /media/data
-	cp /home/replay/replay.ini /media/data
-	cp /home/replay/loader_DE.rbf /media/data
-	cp /home/replay/background.raw /media/data
-	cp /home/replay/loop.pcm /media/data
+	unzip -n /home/replay/firmware.zip -d /media/data
 }
 
 start() {
