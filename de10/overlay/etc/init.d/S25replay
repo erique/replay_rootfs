@@ -4,8 +4,8 @@
 #
 
 init_replay() {
-	cp /home/replay/main.elf /media/data
 	unzip -n /home/replay/firmware.zip -d /media/data
+	unzip -n /home/replay/loader.zip -d /media/data
 }
 
 start() {
