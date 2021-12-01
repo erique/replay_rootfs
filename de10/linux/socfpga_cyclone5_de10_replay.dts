@@ -122,7 +122,9 @@
 };
 
 &usb1 {
-	status = "okay";
+    disable-over-current;
+    dr_mode = "host";
+    status = "okay";
 };
 
 &fpga_bridge0 {
