@@ -1,5 +1,8 @@
 name: image
 on:
+  push:
+    paths:
+      - '.github/**'
   workflow_dispatch:
 
 jobs:
