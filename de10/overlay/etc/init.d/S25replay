@@ -3,6 +3,8 @@
 # replay        Starts replay.
 #
 
+[ "$(id -u)" -ne 0 ] && { echo >&2 "run with : sudo $0 $@"; exit 1; }
+
 init_replay() {
 	unzip -n /home/replay/firmware.zip -d /media/data
 	unzip -n /home/replay/loader.zip -d /media/data
@@ -10,8 +12,9 @@ init_replay() {
 
 start() {
 	[ ! -e /media/data/main.elf ] && init_replay
+	[ -e /var/lock/replay ] && { echo >&2 "already running?"; exit 1; }
 	printf "Starting replay: "
-	cd /media/data && ./main.elf 2>&1 > /var/log/replay &
+	cd /media/data && ./main.elf 2>&1 > /var/log/replay.log &
 	touch /var/lock/replay
 	echo "OK"
 }
