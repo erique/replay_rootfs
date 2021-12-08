@@ -71,21 +71,22 @@ start() {
 
 	create_overlay /etc
 	create_overlay /home
+	create_overlay /var/lib
 	create_tmpfs /var/lib/samba
 
 	echo Ok.
 }
 
 stop() {
-	umount /etc
-	umount /home
 	umount /var/lib/samba
+	umount /var/lib
+	umount /home
+	umount -l /etc
 	sync
 	sleep 1
 	umount "$USER_MNT"
 	sync
-	sleep 1
-	umount "$DATA_MNT"
+	umount -l "$DATA_MNT"
 }
 
 restart() {
