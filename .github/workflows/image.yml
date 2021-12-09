@@ -8,17 +8,13 @@ on:
 jobs:
   image:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+    container: fpgaarcade/replay-rootfs:latest
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-
-    - name: apt install
-      run: |
-        sudo apt update
-        sudo apt install -y mtools
 
     - name: build
       run: ./build.sh
