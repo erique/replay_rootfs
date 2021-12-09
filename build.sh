@@ -22,6 +22,7 @@ rm -rf ${REPO_ROOT}/out
 make -C buildroot O=${REPO_ROOT}/out defconfig BR2_DEFCONFIG=${DE10}/buildroot/terasic_de10nano_cyclone5_replay_defconfig
 
 # pre-build cache size
+mkdir -p ${HOME}/.buildroot-cache/
 du -sch ${HOME}/.buildroot-cache/*
 make -C buildroot O=${REPO_ROOT}/out ccache-stats
 
