@@ -21,11 +21,8 @@ RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py && \
     rm get-pip.py                                                         && \
     python -m pip install matplotlib numpy
 
-RUN useradd -ms /bin/bash rootfs
-USER rootfs
-WORKDIR /home/rootfs
-
-RUN git clone --recurse-submodules                                           \
+RUN cd /root                                                              && \
+    git clone --recurse-submodules                                           \
                 https://github.com/FPGAArcade/replay_rootfs.git           && \
     ./replay_rootfs/build.sh                                              && \
     rm -rf replay_rootfs                                                  && \
