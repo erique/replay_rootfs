@@ -20,8 +20,21 @@ EOF
 
 rm -rf ${REPO_ROOT}/out
 make -C buildroot O=${REPO_ROOT}/out defconfig BR2_DEFCONFIG=${DE10}/buildroot/terasic_de10nano_cyclone5_replay_defconfig
+
+# pre-build cache size
+du -sch ${HOME}/.buildroot-cache/*
+make -C buildroot O=${REPO_ROOT}/out ccache-stats
+
 make -C buildroot O=${REPO_ROOT}/out
 
+# get stats
+make -C buildroot O=${REPO_ROOT}/out graph-build graph-size 
+
+# post-build cache size
+du -sch ${HOME}/.buildroot-cache/*
+make -C buildroot O=${REPO_ROOT}/out ccache-stats
+
+# copy out results
 mkdir -p ${REPO_ROOT}/image
 cp out/target/etc/os-release ${REPO_ROOT}/image/
 cp out/images/sdcard.img ${REPO_ROOT}/image/
@@ -29,3 +42,7 @@ cp out/images/sdcard.img ${REPO_ROOT}/image/
 mkdir -p ${REPO_ROOT}/update
 cp out/target/etc/os-release ${REPO_ROOT}/update/
 mcopy -sn -i out/images/boot.vfat ::* ${REPO_ROOT}/update/
+
+mkdir -p ${REPO_ROOT}/stats
+cp out/graphs/* ${REPO_ROOT}/stats/
+
